@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!-- Nr=<%= shop.shopnumber %> -->
+<html lang="<%= language %>">
+<head>
+    <meta charset="<%= charset %>">
+    <link rel="shortcut icon" href="<% if(fileexists("fav.ico")) { %><%= link.image('fav.ico') %><% } else { %><%= link.commonimage("fav.ico") %><% } %>" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+    <title>
+        <%= text.jobs_application_finished %>
+    </title>
+    <!-- jquery style and scripts -->
+    <% sendhttp301("https://jobs.inacta.ch/vielen-dank") %>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js">
+    </script>
+    <!-- bootstrap style and script -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+    <link href="<%= link.directpageaccess(page.jobportalcss) %>" rel="stylesheet"/>
+    <script src="<%= link.directpageaccess(page.jobportaljs) %>">
+    </script>
+</head>
+<body>
+<br/>
+<br/>
+<br/>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-offset-2 centered infoblock font">
+            <br/>
+            <br/>
+            <b><%= text.jobs_application_sent %></b>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <%= text.jobs_thanks_for_your_interest %>
+            <br/>
+            <br/>
+            <a href="<%= link(page.jobportal) %>">
+                <%= text.jobs_backtooverview %>
+            </a>
+            <br/>
+            <br/>
+        </div>
+    </div>
+</div>
+</body>
+</html>

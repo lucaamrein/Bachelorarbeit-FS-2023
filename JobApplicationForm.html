@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<!-- Nr=<%= shop.shopnumber %> -->
+<html lang="<%= language %>">
+<head>
+    <meta charset="<%= charset %>">
+    <link rel="shortcut icon" href="<%= link.image("cat.png") %>" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        <%= jobportal.job.title %>
+    </title>
+    <!-- jquery style and scripts -->
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+    </script>
+    <script src="https://raw.githubusercontent.com/davidjbradshaw/iframe-resizer/master/js/iframeResizer.contentWindow.min.js">
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js">
+    </script>
+    <!-- dropzone -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/basic.min.css"/>
+    <!-- bootstrap style and script -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
+    </script>
+    <link href="<%= link.directpageaccess(page.jobportalcss) %>" rel="stylesheet"/>
+    <link href="https://fonts.cdnfonts.com/css/gotham-book" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/gotham-black" rel="stylesheet">
+    <script src="<%= link.directpageaccess(page.jobportaljs) %>">
+    </script>
+    <% if(jobportal.isjobschbuttonenabled) { %>
+    <!-- jobcloudsdk -->
+    <script src="<%= link.commonimage("jobcloudsdk/jobcloud-sdk.min.js") %>">
+    </script>
+    <% } %>
+    <% if(captcha.isenabledforjobportal && !captcha.issolved) { %>
+    <!-- recaptcha script -->
+    <script src="//www.google.com/recaptcha/api.js?hl=<%= language %>">
+    </script>
+    <% } %>
+    <% if(!wascookiesent()) { %>
+    <script type="text/javascript">
+        window.onload = function(){
+            if(top.location != document.location && !document.cookie){
+                top.location.href = "<%= iframecookieredirectlink %>";
+            }
+        }
+    </script>
+    <% } %>
+    <% if(languageselection.hasmultiple) { %>
+    <!-- alternate language links espacially for search engines -->
+    <% while(languageselection.hasmore) { %>
+    <link rel="alternate" hreflang="<%= languageselection.id %>" href="<%= languageselection.link %>" />
+    <% } %>
+    <% } %>
+    <% if(securitysettings.showCookieConsent) { %>
+    <%= page(page.cookieconsent) %>
+    <% } %>
+    <style>
+        body {font-family: 'Gotham Book', sans-serif; background-color: #003B5C; font-weight: 500;}
+        h3 {font-family: 'Gotham Black', sans-serif; font-weight: 500;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="<%= link.image("header.png") %>" style="max-width: 100%;" />
+    <br/>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3 class="font content-title">
+                <%= jobportal.job.title %>
+            </h3>
+            <br/>
+            <% if(jobportal.form.hasgeneralerrormessage()) { %>
+            <div class="row">
+                <div class="col-xs-12 errortext">
+                    <%= jobportal.form.generalerrormessage() %>
+                </div>
+            </div>
+            <br/>
+            <% } %>
+            <noscript>
+                <div class="row">
+                    <div class="col-xs-12 errortext">
+                        <%= text.jobs_javascriptmustbeactivated %>
+                    </div>
+                </div>
+                <br/>
+            </noscript>
+            <div class="row cookie-warning-row hide">
+                <div class="col-xs-12 errortext">
+                    <%= text.jobs_cookiesmustbeaccepted %>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <script>
+                if(!navigator.cookieEnabled) {
+                    $(".cookie-warning-row").removeClass("hide");
+                }
+            </script>
+            <form action="https://jobs.inacta.ch/jobs" target="_blank">
+                <input class="btn button font" type="submit" name="Zu allen Jobs" value="Zu allen Jobs"/>
+            </form>
+            <br>
+            <form id="appform" method="post" action="<%= jobportal.form.actionlink %>">
+                <% if(jobportal.isjobschbuttonenabled || (jobportal.isloginwithxingenabled && !jobportal.wasloginwithxingdone) || jobportal.issigninwithlinkedinenabled) { %>
+                <div class="row">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <%= text.jobs_thirdpartydatahint %>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        &nbsp;
+                    </div>
+                    <% if(jobportal.isjobschbuttonenabled) { %>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="applyWithJobsCHButton" data-jobportal-jobid="<%= jobportal.form.jobid %>">
+                        </div>
+                    </div>
+                    <% } %>
+                    <% if(jobportal.isloginwithxingenabled && !jobportal.wasloginwithxingdone) { %>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="loginWithXingButton">
+                            <script type="xing/login">
+                          { "consumer_key": "<%= jobportal.xingconsumerkey %>", "onAuthLogin": "loginWithXingCallback", "language": "
+                          <% if(language == "de") { %>
+                            de
+                          <% } else { %>
+                            en
+                          <% } %>
+                          ", "size": "xlarge" }
+                        </script>
+                            <div class="errortext">
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+                    <% if(jobportal.issigninwithlinkedinenabled) { %>
+                    <div class="col-xs-12 col-sm-3">
+                        <a href="<%= jobportal.signinwithlinkedinlink %>">
+                            <img src="<%= link.commonimage("jobportal/linkedin/Sign-In-Large---Default.png") %>" onmouseover="this.src='<%= link.commonimage("jobportal/linkedin/Sign-In-Large---Hover.png") %>'" onmouseout="this.src='<%= link.commonimage("jobportal/linkedin/Sign-In-Large---Default.png") %>'" alt="SignIn with LinkedIn" width="100%"/>
+                        </a>
+                    </div>
+                    <% } %>
+                </div>
+                <br/>
+                <% } %>
+                <% if(jobportal.form.hasanyfields(true)) { %>
+                <% while(jobportal.form.hasmorefields()) { %>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3">
+                        <%= jobportal.form.fielddisplayname %>
+                    </div>
+                    <div class="col-xs-12 col-sm-9">
+                        <% if(jobportal.form.fieldisradio()) { %>
+                        <select name="<%= jobportal.form.fieldname %>" <% if(jobportal.form.fieldisrequired) { %>required<% } %> style="height: 40px; margin-bottom: 10px" class="form-control<% if(jobportal.form.fieldhaserrormessage()) { %> error<% } %>">
+                        <% if(jobportal.form.fieldhasanyradios()) { %>
+                        <% while(jobportal.form.fieldhasmoreradios()) { %>
+                        <option value="<%= jobportal.form.fieldradioid %>" <% if(jobportal.form.fieldradioisselected) { %>selected<% } %>>
+                        <%= jobportal.form.fieldradiovalue %>
+                        </option>
+                        <% } %>
+                        <% } %>
+                        </select>
+                        <% } else if(jobportal.form.fieldischeckbox) { %>
+                        <input type="checkbox" <% if(jobportal.form.fieldischecked) { %>checked<% } %> name="<%= jobportal.form.fieldname %>"/>
+                        <% } else { %>
+                        <% if(jobportal.form.fieldisuploadfield) { %>
+                        <% if(jobportal.form.fieldisimageupload) { %>
+                        <% shopfile.setcontext(5) %>
+                        <% } else { %>
+                        <% shopfile.setcontext(6) %>
+                        <% } %>
+                        <% if(shopfile.count < jobportal.form.fieldnumberofattachments) { %>
+                        <% if(jobportal.form.fieldisdraganddrop) { %>
+                        <div class="row shopfileupload" data-jobportal-upload-link="<%= shopfile.fileuploadaction %>" data-jobportal-allowed-fileextensions="<% if(jobportal.form.fieldisimageupload) { %><%= jobportal.fileextensionspictures %><% } else { %><%= jobportal.fileextensionsfiles %><% } %>" data-jobportal-allowd-mimtypes="<% if(jobportal.form.fieldisimageupload) { %><%= jobportal.alloweduploadmimetypespictures %><% } else { %><%= jobportal.alloweduploadmimetypesfiles %><% } %>">
+                            <div class="col-xs-12">
+                                <div class="files-dropzone">
+                                    <% if(jobportal.form.fieldisimageupload) { %>
+                                    <%= text.jobs_draganddroppicturehere %>
+                                    <% } else { %>
+                                    <%= text.jobs_draganddropfileshere %>
+                                    <% } %>
+                                    <br/>
+                                    <div class="btn button files-dz-button">
+                                        <% if(jobportal.form.fieldisimageupload) { %>
+                                        <%= text.jobs_choosepicture %>
+                                        <% } else { %>
+                                        <%= text.jobs_choosefiles %>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <br/>
+                                <div class="files-dz-preview">
+                                </div>
+                            </div>
+                        </div>
+                        <% } else { %>
+                        <div class="row shopfileupload">
+                            <div class="col-xs-12">
+                                <div class="btn button files-upload-btn" data-jobportal-upload-link="<%= shopfile.fileuploadaction %>" data-jobportal-allowed-fileextensions="<% if(jobportal.form.fieldisimageupload) { %><%= jobportal.fileextensionspictures %><% } else { %><%= jobportal.fileextensionsfiles %><% } %>" data-jobportal-allowd-mimtypes="<% if(jobportal.form.fieldisimageupload) { %><%= jobportal.alloweduploadmimetypespictures %><% } else { %><%= jobportal.alloweduploadmimetypesfiles %><% } %>">
+                                    <% if(jobportal.form.fieldisimageupload) { %>
+                                    <%= text.jobs_add_picture %>
+                                    <% } else { %>
+                                    <%= text.jobs_add_files %>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-3">
+                                <div class="progressbar">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-1">
+                                  <span class="percent">
+                                  </span>
+                            </div>
+                            <div class="col-xs-12 col-sm-2">
+                                <div class="btn button abort-btn">
+                                    <%= text.abort %>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 infopanel">
+                            </div>
+                        </div>
+                        <% } %>
+                        <% } %>
+                        <% if(shopfile.hasany()) { %>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <% while(shopfile.hasmore()) { %>
+                                <% if(jobportal.form.fieldisimageupload) { %>
+                                <div class="row">
+                                    <div class="col-xs-11 col-xs-offset-1">
+                                        <img src="<%= shopfile.downloadlink %>" style="max-height: 150px;"/>
+                                    </div>
+                                </div>
+                                <% } %>
+                                <div class="row">
+                                    <div class="col-xs-1 text-right">
+                                      <span class="fileDeleteBtn" data-jobportal-deletelink="<%= shopfile.deletelink %>">
+                                        <img src="<%= addparam(link.directpageaccess(page.imagedelete),1,"#FF0000") %>" title="<%= text.delete %>" alt=" " />
+                                      </span>
+                                    </div>
+                                    <div class="col-xs-11">
+                                        <a href="<%= shopfile.downloadlink %>">
+                                            <%= shopfile.filename %>
+                                        </a>
+                                        (<%= shopfile.filesizetext %>)
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        </div>
+                        <br/>
+                        <% } %>
+                        <% if(jobportal.form.fieldisimageupload && jobportal.form.isimageagreementenabled) { %>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="shorten-text">
+                                    <label>
+                                        <input type="checkbox" class="imageAgreementCheckbox" name="<%= jobportal.form.imageagreementid %>" <% if(jobportal.form.isimageagreementchecked) { %>checked<% } %> />
+                                        <% if(!isempty(jobportal.privacypolicylink)) { %>
+                                        <%= text.jobs_imageagreementtext("href='" + jobportal.privacypolicylink + "' target='_blank'") %> *
+                                        <% } else { %>
+                                        <% if(jobportal.hasprivacypolicypdf) { %>
+                                        <%= text.jobs_imageagreementtext("href='" + jobportal.privacypolicypdflink + "' target='_blank'") %> *
+                                        <% } else { %>
+                                        <%= text.jobs_imageagreementtext("href='#' data-toggle='modal' data-target='#TAC'") %> *
+                                        <% } %>
+                                        <% } %>
+                                    </label>
+                                    <a href="#" class="shorten-text-controller">
+                                        <%= text.jobs_more %>
+                                    </a>
+                                </div>
+                                <br/>
+                                <br/>
+                            </div>
+                        </div>
+                        <% } %>
+                        <% } else { %>
+                        <input type="<%= jobportal.form.fieldinputtype %>" name="<%= jobportal.form.fieldname %>" value="<%= jobportal.form.fieldvalue %>" style="height: 40px; margin-bottom: 10px" class="form-control<% if(jobportal.form.fieldhaserrormessage()) { %> error<% } %>" <% if(jobportal.form.fieldisrequired) { %>required<% } %> />
+                        <% } %>
+                        <% if(jobportal.form.fieldhaserrormessage()) { %>
+                        <% if(jobportal.form.fieldisuploadfield) { %>
+                        <div class="errortext">
+                            <%= jobportal.form.fielderrormessage %>
+                        </div>
+                        <br/>
+                        <% } else { %>
+                        <small class="error">
+                            <%= jobportal.form.fielderrormessage %>
+                        </small>
+                        <% } %>
+                        <% } %>
+                        <% } %>
+                    </div>
+                </div>
+                <% } %>
+                <% } %>
+                <br/>
+                <% if(jobportal.form.istermsandconditionsenabled) { %>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3">
+                    <span>
+                      Ich habe die
+                      <a href="https://jobs.inacta.ch/datenschutz">
+                        Datenschutzerklärung
+                      </a>
+                    </span>
+                        <span>
+                      gelesen und akzeptiere diese.
+                    </span>
+                    </div>
+                    <div class="col-xs-12 col-sm-9">
+                        <input type="checkbox" name="<%= jobportal.form.termsandconditionsacceptid %>" class="termsandconditions" <% if(jobportal.form.istermsandconditionschecked) { %>checked<% } %> />
+                        <% if(jobportal.form.hastermsandconditionserrormessage) { %>
+                        <div class="row">
+                            <div class="col-xs-12 errortext">
+                                <%= jobportal.form.termsandconditionserrormessage %>
+                            </div>
+                        </div>
+                        <br/>
+                        <% } %>
+                    </div>
+                </div>
+                <div id="TAC" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    &times;
+                                </button>
+                                <h4 class="modal-title">
+                                    <%= text.jobs_termsandconditions %>
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row shopfileupload">
+                                    <div class="col-xs-12">
+                                        <%= page(page.jobportaltermsandconditions) %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% if(fileexists("privacypolicy.pdf")) { %>
+                            <div class="modal-footer">
+                                <a href="<%= link.download("privacypolicy.pdf") %>">
+                                <%= text.jobs_download_privacypolicy %>
+                                </a>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <% } %>
+                <% if(captcha.isenabledforjobportal && !captcha.issolved) { %>
+                <div class="row">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <div class="g-recaptcha" data-sitekey="<%= captcha.sitekey %>">
+                        </div>
+                        <% if(captcha.haserrormessage) { %>
+                        <div class="row">
+                            <div class="col-xs-12 errortext">
+                                <%= captcha.errormessage %>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                <br/>
+                <% } %>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3 col-sm-offset-3">
+                        <input class="btn button font" type="submit" name="<%= jobportal.form.submitid %>" value="<%= text.jobs_send %>"/>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Browsercheck -->
+<script type="text/javascript">
+    var $buoop = {
+    };
+    $buoop.ol = window.onload;
+    window.onload=function(){
+        try {
+            if ($buoop.ol) $buoop.ol();
+        } catch (e) {
+        }
+        var e = document.createElement("script");
+        e.setAttribute("type", "text/javascript");
+        e.setAttribute("src", "//browser-update.org/update.js");
+        document.body.appendChild(e);
+    }
+</script>
+<% if(jobportal.isloginwithxingenabled) { %>
+<script>
+    function loginWithXingCallback(response) {
+        if(response.error && response.error != "") {
+            if(response.error != "USER_LOGGED_OUT") {
+                if(response.error == "INVALID_CONSUMER") {
+                    $(".loginWithXingButton .errortext").html("<%= text.errorgeneral %>: " + response.error);
+                }
+            }
+        } else {
+            var formData = {
+                "<%= jobportal.xingdatauploadparam %>": JSON.stringify(response),                "<%= jobportal.form.jobidid %>": "<%= jobportal.form.jobid %>"
+            };
+            $.post("<%= jobportal.xingdatauploadlink %>", formData, function() {
+                window.location.reload();
+            });
+        }
+        (function(d) {
+            var js, id='lwx';
+            if (d.getElementById(id)) return;
+            js = d.createElement('script');
+            js.id = id;
+            js.src = "https://www.xing-share.com/plugins/login.js";
+            d.getElementsByTagName('head')[0].appendChild(js)
+        }
+        (document));
+</script>
+<% } %>
+<script>
+</script>
+</body>
+</html>
